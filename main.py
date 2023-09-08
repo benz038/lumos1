@@ -32,8 +32,8 @@ logger.addHandler(file_handler)
 
 # Dauth configuration
 DAUTH_CLIENT_ID = "KJbPd-POzw.A_lRT"
-DAUTH_CLIENT_SECRET = "1h7eL32jz1mHME5IkhQflytCavLfESF2"
-DAUTH_REDIRECT_URI = "http://64.227.164.155:8000/callback"
+DAUTH_CLIENT_SECRET = "V-o8Qfg-dZLDCVKyy6ggnhoLipjMmpWt"
+DAUTH_REDIRECT_URI = "http://64.227.164.155/callback"
 DAUTH_AUTHORIZE_URL = "https://auth.delta.nitt.edu/authorize"
 DAUTH_TOKEN_URL = "https://auth.delta.nitt.edu/api/oauth/token"
 DAUTH_USER_URL = "https://auth.delta.nitt.edu/api/resources/user"
