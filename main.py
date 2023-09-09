@@ -9,6 +9,8 @@ import os
 import requests
 import logging
 from os import listdir
+from flask import session
+from uuid import uuid4  #for creating new session id 
 
 print("All modules loaded...🥳🥳")
 
@@ -41,15 +43,19 @@ DAUTH_USER_URL = "https://auth.delta.nitt.edu/api/resources/user"
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-# //2^20 bytes or 16MB
+# //2^20 bytes or 32MB
 UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 app.config["SECRET_KEY"] = "secret"
+# session mngment fro users
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 app.app_context().push()
@@ -144,7 +150,10 @@ def callback():
 
     # Log the user in
     login_user(user)
-    logger.info(f"User {user.username} logged in")
+    # Assign a new unique session ID to the user
+    session['session_id'] = str(uuid4())
+    logger.info(f"User {user.username} logged in with session ID: {session['session_id']}")
+    
     return redirect(url_for('homepage'))
 
 # Admin panel
@@ -422,9 +431,10 @@ def about():
 def logout():
     username = current_user.username
     logout_user()
-    logger.info(f"User {username} logged out")
+    # Clear the entire session
+    session.clear()
+    logger.info(f"User {username} logged out and session cleared")
     return redirect(url_for('index'))
-
 
 
 if __name__ == '__main__':
