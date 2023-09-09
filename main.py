@@ -32,7 +32,6 @@ logger.addHandler(file_handler)
 
 
 
-# Dauth configuration
 DAUTH_CLIENT_ID = "wqcEHNLpcbGck4Bv"
 DAUTH_CLIENT_SECRET = "BnYzL43oA5rO3L_cQjZNEw.Fp0s5vPWT"
 DAUTH_REDIRECT_URI = "http://64.227.164.155/callback"
@@ -43,7 +42,7 @@ DAUTH_USER_URL = "https://auth.delta.nitt.edu/api/resources/user"
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-# //2^20 bytes or 32MB
+# // 32MB
 UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024 
@@ -51,10 +50,11 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
-app.config["SECRET_KEY"] = "secret"
+# app.config["SECRET_KEY"] = "secret"
 # session mngment fro users
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config["SECRET_KEY"] = os.urandom(24)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -151,7 +151,7 @@ def callback():
     # Log the user in
     login_user(user)
     # Assign a new unique session ID to the user
-    session['session_id'] = str(uuid4())
+    session['session_id'] = os.urandom(24).hex()
     logger.info(f"User {user.username} logged in with session ID: {session['session_id']}")
     
     return redirect(url_for('homepage'))
