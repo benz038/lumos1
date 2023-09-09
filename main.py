@@ -151,7 +151,7 @@ def callback():
     # Log the user in
     login_user(user)
     # Assign a new unique session ID to the user
-    session['session_id'] = os.urandom(24).hex()
+    session['session_id'] = str(uuid4())
     logger.info(f"User {user.username} logged in with session ID: {session['session_id']}")
     
     return redirect(url_for('homepage'))
